@@ -166,19 +166,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             )}
           </div>
 
-          {/* Additional Info */}
-          <div className="mt-8 rounded-lg border border-border/50 bg-muted/30 p-4">
-            <p className="text-sm text-muted-foreground">
-              💡 <strong>Note:</strong> Update the video file in{" "}
-              <code className="rounded bg-muted px-2 py-1 font-mono text-xs">
-                /public/videos/projects/project-{project.id}.mp4
-              </code>{" "}
-              and edit details in{" "}
-              <code className="rounded bg-muted px-2 py-1 font-mono text-xs">
-                /src/data/projects.ts
-              </code>
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>
