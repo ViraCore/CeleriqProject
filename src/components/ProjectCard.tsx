@@ -48,13 +48,11 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
   return (
     <div
       ref={cardRef}
-      className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md transition-all duration-500 ease-out cursor-pointer animate-fade-in ${
-        isHovered ? "scale-[2] z-50 shadow-2xl shadow-primary/20" : "scale-100 hover:shadow-xl"
-      }`}
+      className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md transition-all duration-500 ease-out cursor-pointer animate-fade-in hover:shadow-xl hover:border-primary/50"
       style={{
         animationDelay: `${index * 100}ms`,
         animationFillMode: 'both',
-        transform: isHovered ? 'scale(2)' : `translateY(${parallaxOffset}px)`,
+        transform: `translateY(${parallaxOffset}px)`,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -92,9 +90,7 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
       {/* Content */}
       <div className="relative p-6">
         <div className="mb-2 flex items-start justify-between">
-          <h3 className={`text-xl font-bold tracking-tight transition-all duration-300 ${
-            isHovered ? "text-2xl" : ""
-          }`}>
+          <h3 className="text-xl font-bold tracking-tight transition-all duration-300">
             {project.title}
           </h3>
           {project.liveLink !== "#" && (
