@@ -3,7 +3,7 @@ import HeroVideo from "@/components/HeroVideo";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectModal from "@/components/ProjectModal";
 import BackToTop from "@/components/BackToTop";
-import TechBackground from "@/components/TechBackground";
+
 import ThemeToggle from "@/components/ThemeToggle";
 import { projects, Project } from "@/data/projects";
 
@@ -47,8 +47,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background">
-      {/* Animated Tech Background */}
-      <TechBackground />
+      
       
       {/* Theme Toggle Button */}
       <ThemeToggle show={showThemeToggle} />
