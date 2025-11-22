@@ -1,17 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { Project } from "@/data/projects";
 import { ExternalLink, Play } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
   index: number;
+  onHoverChange?: (isHovered: boolean) => void;
 }
 
-const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
+const ProjectCard = ({ project, onClick, index, onHoverChange }: ProjectCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -31,25 +35,42 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
     setVideoLoaded(true);
   };
 
+  const handleMouseEnter = () => {
+    if (isMobile) return; // Disable hover on mobile
+    setIsHovered(true);
+    onHoverChange?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (isMobile) return; // Disable hover on mobile
+    setIsHovered(false);
+    onHoverChange?.(false);
+  };
+
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm transition-all duration-500 ease-out cursor-pointer animate-fade-in ${
-        isHovered ? "scale-[2] z-50 shadow-2xl shadow-primary/20" : "scale-100 hover:shadow-xl"
+      ref={cardRef}
+      className={`group relative overflow-hidden rounded-2xl border backdrop-blur-sm cursor-pointer animate-fade-in transition-all duration-700 ease-in-out ${
+        isHovered 
+          ? "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] w-[600px] shadow-[0_0_80px_rgba(168,85,247,0.4)] border-primary/50 scale-100" 
+          : "relative border-border/50 bg-card/30 hover:border-border hover:shadow-lg scale-100"
       }`}
       style={{
         animationDelay: `${index * 100}ms`,
         animationFillMode: 'both',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
       {/* Video Background */}
-      <div className="relative aspect-video w-full overflow-hidden bg-black/50">
+      <div className={`relative w-full overflow-hidden bg-black transition-all duration-700 ${
+        isHovered ? "aspect-video" : "aspect-video"
+      }`}>
         <video
           ref={videoRef}
-          className={`h-full w-full object-cover transition-opacity duration-300 ${
-            isHovered && videoLoaded ? "opacity-100" : "opacity-0"
+          className={`h-full w-full object-cover transition-all duration-700 ${
+            isHovered && videoLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
           }`}
           muted
           loop
@@ -62,39 +83,47 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
 
         {/* Fallback Thumbnail */}
         <div
-          className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${project.accentColor} transition-opacity duration-300 ${
-            isHovered && videoLoaded ? "opacity-0" : "opacity-100"
+          className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${project.accentColor} transition-all duration-700 ${
+            isHovered && videoLoaded ? "opacity-0 scale-110" : "opacity-100 scale-100"
           }`}
         >
-          <div className="text-center text-white">
-            <Play className="mx-auto mb-2 h-12 w-12 opacity-70" />
+          <div className={`text-center text-white transition-all duration-500 ${
+            isHovered ? "scale-110 opacity-0" : "scale-100 opacity-100"
+          }`}>
+            <Play className={`mx-auto mb-2 opacity-70 transition-all duration-500 ${
+              isHovered ? "h-16 w-16" : "h-12 w-12"
+            }`} />
             <p className="text-sm font-medium opacity-90">{project.category}</p>
           </div>
         </div>
 
-        {/* Hover Overlay */}
+        {/* Subtle bottom gradient for text readability */}
         <div
-          className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 ${
+          className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-700 ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
         />
       </div>
 
       {/* Content */}
-      <div className="relative p-6">
+      <div className={`relative transition-all duration-700 ${
+        isHovered ? "p-8" : "p-6"
+      }`}>
         <div className="mb-2 flex items-start justify-between">
-          <h3 className={`text-xl font-bold tracking-tight transition-all duration-300 ${
-            isHovered ? "text-2xl" : ""
+          <h3 className={`font-bold tracking-tight transition-all duration-700 ${
+            isHovered ? "text-3xl" : "text-xl"
           }`}>
             {project.title}
           </h3>
           {project.liveLink !== "#" && (
-            <ExternalLink className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+            <ExternalLink className={`text-muted-foreground transition-all duration-500 group-hover:text-primary ${
+              isHovered ? "h-6 w-6" : "h-5 w-5"
+            }`} />
           )}
         </div>
 
-        <p className={`mb-4 text-sm text-muted-foreground transition-all duration-300 ${
-          isHovered ? "line-clamp-none" : "line-clamp-2"
+        <p className={`text-muted-foreground transition-all duration-700 ${
+          isHovered ? "line-clamp-none text-base mb-6 mt-3" : "line-clamp-2 text-sm mb-4"
         }`}>
           {project.description}
         </p>
@@ -104,7 +133,12 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
           {project.techStack.slice(0, isHovered ? undefined : 3).map((tech, idx) => (
             <span
               key={idx}
-              className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+              className={`rounded-full bg-primary/10 px-3 py-1 font-medium text-primary transition-all duration-500 ${
+                isHovered ? "text-sm" : "text-xs"
+              }`}
+              style={{
+                transitionDelay: isHovered ? `${idx * 50}ms` : '0ms'
+              }}
             >
               {tech}
             </span>
@@ -118,21 +152,20 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
 
         {/* Hover Indicator */}
         <div
-          className={`mt-4 flex items-center gap-2 text-sm font-medium text-primary transition-opacity duration-300 ${
-            isHovered ? "opacity-100" : "opacity-0"
+          className={`mt-6 flex items-center gap-2 font-medium text-primary transition-all duration-700 ${
+            isHovered ? "opacity-100 text-base translate-y-0" : "opacity-0 text-sm -translate-y-2"
           }`}
         >
-          <span>Click to view details</span>
-          <ExternalLink className="h-4 w-4" />
+          <span>Click to view full details</span>
+          <ExternalLink className="h-5 w-5 animate-pulse" />
         </div>
       </div>
 
-      {/* Animated Border */}
+      {/* Animated Glow Border */}
       <div
-        className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${project.accentColor} opacity-0 transition-opacity duration-300 ${
-          isHovered ? "opacity-20" : ""
+        className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${project.accentColor} transition-all duration-700 pointer-events-none ${
+          isHovered ? "opacity-30 blur-xl" : "opacity-0"
         }`}
-        style={{ clipPath: "inset(0 round 1rem)" }}
       />
     </div>
   );
