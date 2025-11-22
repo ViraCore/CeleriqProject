@@ -225,6 +225,211 @@
     }
   }
 
+  @keyframes stable-flow {
+    0%, 100% { 
+      transform: translateX(0);
+      opacity: 0.2;
+    }
+    50% { 
+      transform: translateX(30px);
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes gentle-float {
+    0%, 100% { 
+      transform: translate(0, 0);
+      opacity: 0.2;
+    }
+    25% { 
+      transform: translate(10px, -15px);
+      opacity: 0.4;
+    }
+    50% { 
+      transform: translate(-5px, -25px);
+      opacity: 0.3;
+    }
+    75% { 
+      transform: translate(8px, -10px);
+      opacity: 0.35;
+    }
+  }
+
+  @keyframes soft-pulse {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.5;
+      transform: scale(1.15);
+    }
+  }
+
+  /* Cyberpunk Hero Animations */
+  @keyframes typing {
+    from { 
+      width: 0;
+      opacity: 0;
+    }
+    to { 
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  @keyframes glitch {
+    0% {
+      text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                  -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+                  -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    14% {
+      text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                  -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+                  -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    15% {
+      text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                  0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+                  -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    49% {
+      text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                  0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+                  -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    50% {
+      text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                  0.05em 0 0 rgba(0, 255, 0, 0.75),
+                  0 -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    99% {
+      text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                  0.05em 0 0 rgba(0, 255, 0, 0.75),
+                  0 -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+    100% {
+      text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+                  -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+                  -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+    }
+  }
+
+  @keyframes scanner {
+    0% {
+      top: -100%;
+    }
+    50% {
+      top: 100%;
+      opacity: 0.5;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes text-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+      text-shadow: 0 0 10px hsl(var(--accent)),
+                   0 0 20px hsl(var(--accent)),
+                   0 0 30px hsl(var(--accent));
+    }
+    20%, 24%, 55% {
+      opacity: 0.6;
+      text-shadow: none;
+    }
+  }
+
+  /* Cyberpunk Loader Animations */
+  @keyframes grid-scroll {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 50px 50px;
+    }
+  }
+
+  @keyframes scan-vertical {
+    0% {
+      top: -100%;
+    }
+    100% {
+      top: 100%;
+    }
+  }
+
+  @keyframes scan-horizontal {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  @keyframes shimmer-progress {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes particle-float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateY(-30px) translateX(15px);
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes glitch-loader {
+    0%, 100% {
+      text-shadow: 0 0 20px #06b6d4,
+                   0 0 40px #06b6d4,
+                   2px 2px 0 #ec4899,
+                   -2px -2px 0 #3b82f6;
+    }
+    25% {
+      text-shadow: 0 0 20px #06b6d4,
+                   0 0 40px #06b6d4,
+                   -2px -2px 0 #ec4899,
+                   2px 2px 0 #3b82f6;
+    }
+    50% {
+      text-shadow: 0 0 20px #06b6d4,
+                   0 0 40px #06b6d4,
+                   0 0 0 #ec4899,
+                   0 0 0 #3b82f6;
+    }
+    75% {
+      text-shadow: 0 0 20px #06b6d4,
+                   0 0 40px #06b6d4,
+                   2px -2px 0 #ec4899,
+                   -2px 2px 0 #3b82f6;
+    }
+  }
+
   @keyframes gradient {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -291,6 +496,141 @@
     animation: fade-in 1s ease-in forwards;
   }
 
+  /* Cyberpunk Effects */
+  .glitch-text {
+    position: relative;
+    animation: glitch 2s infinite;
+    text-shadow: 0 0 20px hsl(var(--accent)),
+                 0 0 40px hsl(var(--accent)),
+                 0 0 60px hsl(var(--accent));
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 hsl(var(--primary));
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch 3s infinite linear alternate-reverse;
+  }
+
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 hsl(var(--accent));
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch 2s infinite linear alternate-reverse;
+  }
+
+  .typing-animation {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 1s steps(30) forwards;
+    animation-fill-mode: both;
+    opacity: 0;
+  }
+
+  .typing-animation-slow {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 1.5s steps(30) forwards;
+    animation-fill-mode: both;
+    opacity: 0;
+  }
+
+  .scanner-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(var(--accent)) 50%, 
+      transparent
+    );
+    top: -100%;
+    animation: scanner 3s ease-in-out infinite;
+    box-shadow: 0 0 10px hsl(var(--accent));
+  }
+
+  .text-gradient-animate {
+    background: linear-gradient(90deg, 
+      hsl(var(--primary)), 
+      hsl(var(--accent)), 
+      hsl(var(--primary))
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Cyberpunk Loader Styles */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .animate-grid-scroll {
+    animation: grid-scroll 20s linear infinite;
+  }
+
+  .scan-line-vertical {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, #06b6d4, transparent);
+    top: -100%;
+    left: 50%;
+    animation: scan-vertical 4s ease-in-out infinite;
+    box-shadow: 0 0 20px #06b6d4;
+  }
+
+  .scan-line-horizontal {
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(to right, transparent, #06b6d4, transparent);
+    left: -100%;
+    top: 50%;
+    animation: scan-horizontal 6s ease-in-out infinite;
+    box-shadow: 0 0 20px #06b6d4;
+  }
+
+  .scanner-line-loader {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+    top: 0;
+    animation: scanner 3s ease-in-out infinite;
+    box-shadow: 0 0 10px #06b6d4;
+  }
+
+  .bg-progress-grid {
+    background-image: 
+      repeating-linear-gradient(90deg, rgba(6, 182, 212, 0.1) 0px, rgba(6, 182, 212, 0.1) 1px, transparent 1px, transparent 4px);
+  }
+
+  .animate-shimmer-progress {
+    animation: shimmer-progress 2s infinite;
+  }
+
+  .glitch-text-loader {
+    animation: glitch-loader 3s ease-in-out infinite;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     .text-cinematic {
@@ -311,6 +651,16 @@
     .btn-hero,
     .btn-hero-outline {
       @apply px-5 py-2.5 text-sm;
+    }
+
+    /* Reduce glitch intensity on mobile */
+    .glitch-text {
+      animation: glitch 3s infinite;
+    }
+
+    .glitch-text::before,
+    .glitch-text::after {
+      display: none;
     }
   }
 }

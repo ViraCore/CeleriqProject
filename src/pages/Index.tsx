@@ -6,9 +6,11 @@ import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackgroundAnimation from "@/components/BackgroundAnimation";
+import CyberpunkLoader from "@/components/CyberpunkLoader";
 import { projects, Project } from "@/data/projects";
 
 const Index = () => {
+  const [loadingComplete, setLoadingComplete] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +52,15 @@ const Index = () => {
       setShowThemeToggle(true);
     }, 500);
   };
+
+  const handleLoadingComplete = () => {
+    setLoadingComplete(true);
+  };
+
+  // Show loader first
+  if (!loadingComplete) {
+    return <CyberpunkLoader onComplete={handleLoadingComplete} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background">

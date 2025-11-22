@@ -98,29 +98,30 @@ const HeroVideo = ({ onVideoStart }: HeroVideoProps) => {
     };
   }, [onVideoStart]);
 
+  // Apply parallax effect after video ends and scrolling is enabled
   useEffect(() => {
     const handleScroll = () => {
-      // Only apply parallax if scroll is enabled
       if (!scrollEnabled) return;
       
       const scrolled = window.scrollY;
-      if (videoRef.current && scrolled > 0) {
-        // Parallax effect on video
+      if (videoRef.current) {
+        // Parallax effect - video moves slower than scroll
         videoRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
+        videoRef.current.style.transition = 'transform 0.1s ease-out';
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollEnabled]);
 
   return (
     <>
       <section className="relative h-screen w-full overflow-hidden">
-        {/* Video Background */}
+        {/* Video Background with Parallax */}
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out"
+          className="absolute inset-0 h-full w-full object-cover"
           muted
           playsInline
           preload="auto"
