@@ -4,6 +4,7 @@ import ProjectCard from "@/components/ProjectCard";
 import ProjectModal from "@/components/ProjectModal";
 import BackToTop from "@/components/BackToTop";
 import TechBackground from "@/components/TechBackground";
+import ThemeToggle from "@/components/ThemeToggle";
 import { projects, Project } from "@/data/projects";
 
 const Index = () => {
@@ -11,6 +12,7 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [showThemeToggle, setShowThemeToggle] = useState(false);
   
   const sectionHeaderRef = useRef<HTMLDivElement>(null);
   const techSectionRef = useRef<HTMLDivElement>(null);
@@ -35,13 +37,24 @@ const Index = () => {
     setTimeout(() => setSelectedProject(null), 300);
   };
 
+  const handleVideoStart = () => {
+    setVideoStarted(true);
+    // Show theme toggle after a short delay
+    setTimeout(() => {
+      setShowThemeToggle(true);
+    }, 500);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background">
       {/* Animated Tech Background */}
       <TechBackground />
       
+      {/* Theme Toggle Button */}
+      <ThemeToggle show={showThemeToggle} />
+      
       {/* Hero Video Section with Ben 10 Animation */}
-      <HeroVideo onVideoStart={() => setVideoStarted(true)} />
+      <HeroVideo onVideoStart={handleVideoStart} />
       
       {/* Main Content */}
       <main className="relative z-20 bg-transparent">
