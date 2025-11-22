@@ -42,11 +42,12 @@ export default function Footer() {
               <div className="flex items-center space-x-3 mb-4">
                 <img 
                   src="/favicon.png" 
-                  alt="CelerIQ Logo" 
+                  alt="CelerIQAI Logo" 
                   className="w-10 h-10"
                 />
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                  CelerIQ
+                <h3 className="text-2xl font-bold">
+                  <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">CelerIQ</span>
+                  <span className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent">AI</span>
                 </h3>
               </div>
               <p className="text-muted-foreground leading-relaxed max-w-md">
@@ -124,7 +125,7 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-border/50">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} CelerIQ. All rights reserved.
+              © {new Date().getFullYear()} <span className="text-foreground">CelerIQ</span><span className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent font-semibold">AI</span>. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground">
               Built with passion and innovation

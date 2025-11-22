@@ -78,10 +78,11 @@ const CyberpunkLoader = ({ onComplete }: CyberpunkLoaderProps) => {
 
       {/* Main Content - Responsive */}
       <div className="relative z-10 max-w-4xl w-full px-4 sm:px-6 space-y-8 sm:space-y-12">
-        {/* CelerIQ Logo/Title */}
+        {/* CelerIQAI Logo/Title */}
         <div className="text-center space-y-3 sm:space-y-4">
-          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 glitch-text-loader" data-text="CelerIQ">
-            CelerIQ
+          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black glitch-text-loader" data-text="CelerIQAI">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">CelerIQ</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-violet-500 animate-rainbow">AI</span>
           </h1>
           <div className="h-1 w-40 sm:w-48 md:w-64 mx-auto bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-pulse"></div>
         </div>
