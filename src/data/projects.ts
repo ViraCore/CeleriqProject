@@ -52,7 +52,7 @@ export const projects: Project[] = [
     title: "Homer",
     description: "Intelligent rental marketplace revolutionizing property search with AI-powered lifestyle filters. Features bidirectional matching where renters can find properties or post requirements for owners to apply. Analyzes real-world comfort factors including safety, commute, noise levels, and local amenities for optimal home selection.",
     techStack: ["React", "Node.js", "MySQL", "Redis", "Stripe", "AI/ML", "Tailwind CSS"],
-    liveLink: "#", // Update with your actual link
+    liveLink: "https://ownerrenter.netlify.app/", // Update with your actual link
     videoPath: "/videos/projects/project-4.mp4",
     thumbnail: "/placeholder.svg",
     category: "Web Application",
