@@ -8,16 +8,6 @@ interface CustomVideoPlayerProps {
 
 const PLAYBACK_SPEEDS = [0.5, 1, 1.5, 2];
 
-// Helper to detect connection speed
-const getConnectionSpeed = (): string => {
-  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
-  if (connection) {
-    const effectiveType = connection.effectiveType; // '4g', '3g', '2g', 'slow-2g'
-    return effectiveType || 'unknown';
-  }
-  return 'unknown';
-};
-
 const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -31,8 +21,6 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
   const [isSeeking, setIsSeeking] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showControls, setShowControls] = useState(true);
-  const [connectionSpeed, setConnectionSpeed] = useState<string>('unknown');
-  const [bufferHealth, setBufferHealth] = useState<number>(0);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -184,31 +172,13 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
     const video = videoRef.current;
     if (!video) return;
 
-    // Detect connection speed on mount
-    const speed = getConnectionSpeed();
-    setConnectionSpeed(speed);
-
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
-    const handleTimeUpdate = () => {
-      setCurrentTime(video.currentTime);
-      
-      // Calculate buffer health (how much is buffered ahead)
-      if (video.buffered.length > 0) {
-        for (let i = 0; i < video.buffered.length; i++) {
-          if (video.buffered.start(i) <= video.currentTime && video.currentTime <= video.buffered.end(i)) {
-            const bufferedAhead = video.buffered.end(i) - video.currentTime;
-            setBufferHealth(bufferedAhead);
-            break;
-          }
-        }
-      }
-    };
+    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
     const handleDurationChange = () => setDuration(video.duration);
     const handleLoadedData = () => setIsLoading(false);
     const handleWaiting = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
-    const handleCanPlayThrough = () => setIsLoading(false);
     
     const handleProgress = () => {
       if (video.buffered.length > 0) {
@@ -216,12 +186,6 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
         const percentage = (bufferedEnd / video.duration) * 100;
         setBuffered(percentage);
       }
-    };
-
-    // Stalled event - video stopped due to buffering
-    const handleStalled = () => {
-      console.log("Video stalled - buffering...");
-      setIsLoading(true);
     };
 
     video.addEventListener("play", handlePlay);
@@ -232,8 +196,6 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
     video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("waiting", handleWaiting);
     video.addEventListener("canplay", handleCanPlay);
-    video.addEventListener("canplaythrough", handleCanPlayThrough);
-    video.addEventListener("stalled", handleStalled);
 
     return () => {
       video.removeEventListener("play", handlePlay);
@@ -244,8 +206,6 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
       video.removeEventListener("loadeddata", handleLoadedData);
       video.removeEventListener("waiting", handleWaiting);
       video.removeEventListener("canplay", handleCanPlay);
-      video.removeEventListener("canplaythrough", handleCanPlayThrough);
-      video.removeEventListener("stalled", handleStalled);
     };
   }, []);
 
@@ -298,28 +258,20 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
       onMouseMove={resetControlsTimeout}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
-      {/* Video Element with optimizations for large files */}
+      {/* Video Element */}
       <video
         ref={videoRef}
         className="w-full h-full object-contain"
         onClick={togglePlay}
         playsInline
-        preload="auto"
-        crossOrigin="anonymous"
       >
         <source src={videoPath} type="video/mp4" />
-        {/* Fallback message */}
-        <p className="text-white text-center">Your browser doesn't support video playback.</p>
       </video>
 
-      {/* Loading Spinner with buffer info */}
+      {/* Loading Spinner */}
       {isLoading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm">
-          <Loader2 className="h-12 w-12 text-white animate-spin mb-4" />
-          <p className="text-white text-sm font-medium">Buffering video...</p>
-          <p className="text-white/60 text-xs mt-1">
-            {buffered > 0 ? `${Math.round(buffered)}% loaded` : 'Loading...'}
-          </p>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <Loader2 className="h-12 w-12 text-white animate-spin" />
         </div>
       )}
 
@@ -336,13 +288,7 @@ const CustomVideoPlayer = ({ videoPath, className = "" }: CustomVideoPlayerProps
           onClick={handleProgressClick}
           onMouseDown={handleProgressMouseDown}
         >
-          {/* Buffered Progress */}
-          <div className="absolute inset-0 bg-white/20">
-            <div
-              className="h-full bg-white/40 transition-all"
-              style={{ width: `${buffered}%` }}
-            />
-          </div>
+          
 
           {/* Current Progress */}
           <div

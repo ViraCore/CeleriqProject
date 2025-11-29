@@ -124,8 +124,7 @@ const HeroVideo = ({ onVideoStart }: HeroVideoProps) => {
           className="absolute inset-0 h-full w-full object-cover"
           muted
           playsInline
-          preload="metadata"
-          poster="/placeholder.svg"
+          preload="auto"
         >
           <source src="/videos/hero-video.mp4" type="video/mp4" />
         </video>

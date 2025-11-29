@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Project } from "@/data/projects";
-import { ExternalLink, Play, Loader2 } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectCardProps {
   project: Project;
@@ -11,41 +11,10 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoLoading, setVideoLoading] = useState(false);
-  const [isInView, setIsInView] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout>();
 
-  // Intersection Observer for lazy loading
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInView(true);
-          }
-        });
-      },
-      {
-        rootMargin: "100px", // Start loading 100px before entering viewport
-        threshold: 0.1,
-      }
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
-    };
-  }, []);
-
-  // Video playback management with debouncing
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -69,37 +38,9 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleVideoLoad = useCallback(() => {
+  const handleVideoLoad = () => {
     setVideoLoaded(true);
-    setVideoLoading(false);
-  }, []);
-
-  const handleVideoLoadStart = useCallback(() => {
-    setVideoLoading(true);
-  }, []);
-
-  // Debounced hover handlers
-  const handleMouseEnter = useCallback(() => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovered(true);
-    }, 100); // Small delay to prevent accidental hovers
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-    setIsHovered(false);
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-    };
-  }, []);
+  };
 
   // Calculate parallax offset based on card position and index
   const parallaxOffset = Math.sin((scrollY + index * 200) * 0.002) * 10;
@@ -113,35 +54,25 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
         animationFillMode: 'both',
         transform: `translateY(${parallaxOffset}px)`,
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
       {/* Video Background */}
       <div className="relative aspect-video w-full overflow-hidden bg-black/50">
-        {isInView && (
-          <video
-            ref={videoRef}
-            className={`h-full w-full object-cover transition-opacity duration-300 ${
-              isHovered && videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            muted
-            loop
-            playsInline
-            preload="none"
-            onLoadStart={handleVideoLoadStart}
-            onLoadedData={handleVideoLoad}
-          >
-            <source src={project.videoPath} type="video/mp4" />
-          </video>
-        )}
-
-        {/* Loading Indicator */}
-        {videoLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
-            <Loader2 className="h-8 w-8 text-white animate-spin" />
-          </div>
-        )}
+        <video
+          ref={videoRef}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${
+            isHovered && videoLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onLoadedData={handleVideoLoad}
+        >
+          <source src={project.videoPath} type="video/mp4" />
+        </video>
 
         {/* Fallback Thumbnail */}
         <div
