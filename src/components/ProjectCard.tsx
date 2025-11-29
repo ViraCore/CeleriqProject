@@ -13,6 +13,8 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [thumbnailLoaded, setThumbnailLoaded] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
@@ -144,17 +146,36 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
           </video>
         )}
 
-        {/* Fallback Thumbnail */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${project.accentColor} transition-opacity duration-300 ${
-            isHovered && videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
-        >
-          <div className="text-center text-white">
-            <Play className="mx-auto mb-2 h-12 w-12 opacity-70" />
-            <p className="text-sm font-medium opacity-90">{project.category}</p>
+        {/* Static Thumbnail - Lazy Loaded */}
+        {isInView && !thumbnailError && (
+          <img
+            src={project.thumbnail}
+            alt={`${project.title} thumbnail`}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+              isHovered && videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+            loading="lazy"
+            onLoad={() => setThumbnailLoaded(true)}
+            onError={() => setThumbnailError(true)}
+          />
+        )}
+
+        {/* Fallback when thumbnail fails to load or is loading */}
+        {(!isInView || !thumbnailLoaded || thumbnailError) && (
+          <div
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${project.accentColor} transition-opacity duration-300 ${
+              isHovered && videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            <div className="text-center text-white">
+              <Play className="mx-auto mb-2 h-12 w-12 opacity-70" />
+              <p className="text-sm font-medium opacity-90">{project.category}</p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Overlay gradient for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       </div>
 
       {/* Content - Responsive padding */}

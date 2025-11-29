@@ -21,7 +21,7 @@ export const projects: Project[] = [
     techStack: ["Python", "TensorFlow", "OpenCV", "DICOM", "Flask", "3D Visualization"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-1.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-1-thumbnail.jpg",
     category: "Medical AI",
     accentColor: "from-cyan-500 to-blue-600"
   },
@@ -32,7 +32,7 @@ export const projects: Project[] = [
     techStack: ["Python", "TensorFlow", "Flask", "OpenCV", "React", "MongoDB"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-2.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-2-thumbnail.jpg",
     category: "Healthcare AI",
     accentColor: "from-rose-500 to-pink-600"
   },
@@ -43,7 +43,7 @@ export const projects: Project[] = [
     techStack: ["Python", "PyTorch", "DICOM", "FastAPI", "React", "Medical Imaging"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-3.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-3-thumbnail.jpg",
     category: "Medical AI",
     accentColor: "from-emerald-500 to-teal-600"
   },
@@ -54,7 +54,7 @@ export const projects: Project[] = [
     techStack: ["React", "Node.js", "MySQL", "Redis", "Stripe", "AI/ML", "Tailwind CSS"],
     liveLink: "https://ownerrenter.netlify.app/", // Update with your actual link
     videoPath: "/videos/projects/project-4.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-4-thumbnail.jpg",
     category: "Web Application",
     accentColor: "from-violet-500 to-purple-600"
   },
@@ -65,7 +65,7 @@ export const projects: Project[] = [
     techStack: ["React", "FastAPI", "OpenAI GPT-4", "WebRTC", "MongoDB", "Python"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-5.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-5-thumbnail.jpg",
     category: "EdTech AI",
     accentColor: "from-amber-500 to-orange-600"
   },
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     techStack: ["React", "Strapi CMS", "PostgreSQL", "Node.js", "Tailwind CSS", "GraphQL"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-6.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-6-thumbnail.jpg",
     category: "Healthcare Portal",
     accentColor: "from-red-500 to-rose-600"
   },
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     techStack: ["React", "Python", "MySQL", "Redis", "Stripe", "PWA", "Tailwind CSS"],
     liveLink: "https://geeessopticals.netlify.app",
     videoPath: "/videos/projects/project-7.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-7-thumbnail.jpg",
     category: "E-commerce",
     accentColor: "from-indigo-500 to-blue-600"
   },
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     techStack: ["Next.js", "React", "Sanity CMS", "Framer Motion", "TypeScript", "Tailwind CSS"],
     liveLink: "https://jewelerystore1246.netlify.app/", // Update with your actual link
     videoPath: "/videos/projects/project-8.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-8-thumbnail.jpg",
     category: "E-commerce",
     accentColor: "from-yellow-500 to-amber-600"
   },
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     techStack: ["Python", "PyTorch", "DICOM", "Medical Imaging", "FastAPI", "React"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-9.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/image/project-9-thumbnail.jpg",
     category: "Medical AI",
     accentColor: "from-purple-500 to-indigo-600"
   }

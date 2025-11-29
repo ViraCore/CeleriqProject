@@ -15,7 +15,7 @@ const CyberpunkLoader = ({ onComplete }: CyberpunkLoaderProps) => {
   const loadingMessages = [
     'INITIALIZING SYSTEM...',
     'LOADING NEURAL NETWORKS...',
-
+    
     'LOADING PROJECT ASSETS...',
     'SYNCING AI MODULES...',
     'OPTIMIZING PERFORMANCE...',
@@ -62,7 +62,7 @@ const CyberpunkLoader = ({ onComplete }: CyberpunkLoaderProps) => {
     };
 
     const handleError = () => {
-      console.warn('Hero video failed to preload');
+      console.warn('');
       setVideoLoaded(true); // Continue anyway
     };
 
@@ -174,15 +174,7 @@ const CyberpunkLoader = ({ onComplete }: CyberpunkLoaderProps) => {
               <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity text-cyan-400`}>█</span>
             </div>
 
-            {/* Video Loading Status */}
-            {progress > 20 && (
-              <div className="flex items-center gap-2 text-xs text-cyan-300/70">
-                <span>HERO VIDEO:</span>
-                <span className={videoLoaded ? 'text-green-400' : 'text-yellow-400'}>
-                  {videoLoaded ? '✓ LOADED' : '⟳ LOADING...'}
-                </span>
-              </div>
-            )}
+            
 
             {/* Progress Bar */}
             <div className="space-y-2 pt-4">
