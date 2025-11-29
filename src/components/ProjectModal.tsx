@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { Project } from "@/data/projects";
-import { X, ExternalLink, Play, Pause, Maximize, Minimize } from "lucide-react";
+import { X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CustomVideoPlayer from "./CustomVideoPlayer";
 
 interface ProjectModalProps {
   project: Project | null;
@@ -10,62 +11,17 @@ interface ProjectModalProps {
 }
 
 const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoContainerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
-      setIsPlaying(false);
     }
 
     return () => {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
-  // Handle fullscreen change events
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const toggleFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement && videoContainerRef.current) {
-        await videoContainerRef.current.requestFullscreen();
-      } else if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
-    } catch (error) {
-      console.error('Error toggling fullscreen:', error);
-    }
-  };
-
-  const handleVideoClick = () => {
-    togglePlay();
-  };
 
   if (!isOpen || !project) return null;
 
@@ -86,47 +42,10 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
           <X className="h-6 w-6" />
         </button>
 
-        {/* Video Section */}
-        <div ref={videoContainerRef} className="relative aspect-video w-full overflow-hidden rounded-t-2xl bg-black">
-          <video
-            ref={videoRef}
-            className="h-full w-full object-cover"
-            loop
-            playsInline
-            onClick={handleVideoClick}
-          >
-            <source src={project.videoPath} type="video/mp4" />
-          </video>
-
-          {/* Play/Pause Overlay */}
-          <div
-            className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/20 opacity-0 transition-opacity hover:opacity-100"
-            onClick={handleVideoClick}
-          >
-            {isPlaying ? (
-              <div className="rounded-full bg-black/50 p-6 backdrop-blur-sm">
-                <Pause className="h-12 w-12 text-white" fill="white" />
-              </div>
-            ) : (
-              <div className="rounded-full bg-black/50 p-6 backdrop-blur-sm">
-                <Play className="h-12 w-12 text-white" fill="white" />
-              </div>
-            )}
-          </div>
-
-          {/* Fullscreen Button - Responsive sizing */}
-          <button
-            onClick={toggleFullscreen}
-            className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-20 rounded-full bg-black/60 p-2 sm:p-3 backdrop-blur-sm transition-all hover:bg-black/80 hover:scale-110 active:scale-95"
-            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-          >
-            {isFullscreen ? (
-              <Minimize className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-            ) : (
-              <Maximize className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-            )}
-          </button>
-
+        {/* Video Section with Custom Player */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl bg-black">
+          <CustomVideoPlayer videoPath={project.videoPath} className="w-full h-full" />
+          
           {/* Gradient Overlay */}
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
         </div>
@@ -162,25 +81,6 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
 
           {/* Action Buttons - Responsive */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-            <Button
-              onClick={togglePlay}
-              size="lg"
-              variant="outline"
-              className="group flex-1 w-full sm:min-w-[180px]"
-            >
-              {isPlaying ? (
-                <>
-                  <Pause className="mr-2 h-5 w-5" />
-                  Pause Video
-                </>
-              ) : (
-                <>
-                  <Play className="mr-2 h-5 w-5" />
-                  Play Video
-                </>
-              )}
-            </Button>
-
             {project.liveLink !== "#" && (
               <Button
                 onClick={() => window.open(project.liveLink, "_blank")}
