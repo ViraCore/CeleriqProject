@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Project } from "@/data/projects";
-import { ExternalLink, Play, Loader2 } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectCardProps {
   project: Project;
@@ -11,7 +11,6 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoLoading, setVideoLoading] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -45,21 +44,20 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
     };
   }, []);
 
-  // Load video source only when hovered for the first time
+  // Load video source when in view (not on hover) for faster playback
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !isHovered || !isInView) return;
+    if (!video || !isInView) return;
 
-    // Load video source on first hover
+    // Load video source as soon as it's in view
     if (video.children.length === 0) {
-      setVideoLoading(true);
       const source = document.createElement("source");
       source.src = project.videoPath;
       source.type = "video/mp4";
       video.appendChild(source);
       video.load();
     }
-  }, [isHovered, isInView, project.videoPath]);
+  }, [isInView, project.videoPath]);
 
   // Video playback management with debouncing
   useEffect(() => {
@@ -87,11 +85,6 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
 
   const handleVideoLoad = useCallback(() => {
     setVideoLoaded(true);
-    setVideoLoading(false);
-  }, []);
-
-  const handleVideoLoadStart = useCallback(() => {
-    setVideoLoading(true);
   }, []);
 
   // Debounced hover handlers
@@ -144,19 +137,11 @@ const ProjectCard = ({ project, onClick, index }: ProjectCardProps) => {
             muted
             loop
             playsInline
-            preload="none"
-            onLoadStart={handleVideoLoadStart}
+            preload="metadata"
             onLoadedData={handleVideoLoad}
           >
             {/* Source will be added dynamically on hover */}
           </video>
-        )}
-
-        {/* Loading Indicator */}
-        {videoLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
-            <Loader2 className="h-8 w-8 text-white animate-spin" />
-          </div>
         )}
 
         {/* Fallback Thumbnail */}

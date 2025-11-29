@@ -137,7 +137,7 @@ const LazyVideo = ({
       loop={loop}
       muted={muted}
       playsInline={playsInline}
-      preload="none"
+      preload="metadata"
     >
       {/* Source will be added dynamically when video is in viewport */}
     </video>

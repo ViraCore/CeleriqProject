@@ -72,7 +72,7 @@ export const projects: Project[] = [
   {
     id: 6,
     title: "Cancer Website",
-    description: "Comprehensive cancer awareness and information portal dedicated to empowering patients and families. Provides evidence-based educational resources, treatment options, survivor stories, and access to a supportive community network.",
+    description: "A cancer care portal featuring AI-driven diagnosis, patient and doctor connectivity, automated reports, and chatbots—built to streamline treatment and improve accessibility to critical healthcare services.",
     techStack: ["React", "Strapi CMS", "PostgreSQL", "Node.js", "Tailwind CSS", "GraphQL"],
     liveLink: "#", // Update with your actual link
     videoPath: "/videos/projects/project-6.mp4",
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     techStack: ["React", "Python", "MySQL", "Redis", "Stripe", "PWA", "Tailwind CSS"],
     liveLink: "https://geeessopticals.netlify.app",
     videoPath: "/videos/projects/project-7.mp4",
-    thumbnail: "/placeholder.svg",
+    thumbnail: "/videos/projects/project-7.mp4",
     category: "E-commerce",
     accentColor: "from-indigo-500 to-blue-600"
   },
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     title: "Rajasthan Diamonds Website",
     description: "Elegant jewelry showcase website featuring stunning visuals and smooth animations. Showcases exquisite diamond collections with high-resolution imagery, custom design consultation, and streamlined inquiry management for luxury clientele.",
     techStack: ["Next.js", "React", "Sanity CMS", "Framer Motion", "TypeScript", "Tailwind CSS"],
-    liveLink: "#", // Update with your actual link
+    liveLink: "https://jewelerystore1246.netlify.app/", // Update with your actual link
     videoPath: "/videos/projects/project-8.mp4",
     thumbnail: "/placeholder.svg",
     category: "E-commerce",

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Play, Pause, Maximize, Minimize, Volume2, VolumeX, Settings, Loader2, Wifi, WifiOff } from "lucide-react";
-import { useConnectionSpeed } from "@/hooks/use-connection-speed";
+import { Play, Pause, Maximize, Minimize } from "lucide-react";
 
 interface LazyCustomVideoPlayerProps {
   videoPath: string;
@@ -8,40 +7,28 @@ interface LazyCustomVideoPlayerProps {
   shouldLoad?: boolean; // Control when to actually load the video
 }
 
-const PLAYBACK_SPEEDS = [0.5, 1, 1.5, 2];
-
 const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }: LazyCustomVideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
   const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [bufferHealth, setBufferHealth] = useState<number>(0);
-  const [showConnectionInfo, setShowConnectionInfo] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
-  
-  // Use connection speed hook
-  const connectionInfo = useConnectionSpeed();
 
   // Load video source when shouldLoad becomes true
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !shouldLoad || videoLoaded) return;
 
-    setIsLoading(true);
-    
     // Add source element dynamically
     const source = document.createElement("source");
     source.src = videoPath;
@@ -117,15 +104,6 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
       setIsMuted(!isMuted);
     }
   }, [isMuted]);
-
-  // Change playback speed
-  const changePlaybackSpeed = useCallback((speed: number) => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = speed;
-      setPlaybackSpeed(speed);
-      setShowSpeedMenu(false);
-    }
-  }, []);
 
   // Seek to position
   const seekTo = useCallback((time: number) => {
@@ -203,14 +181,6 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
           e.preventDefault();
           seekTo(Math.min(duration, currentTime + 5));
           break;
-        case "ArrowUp":
-          e.preventDefault();
-          setVolume((v) => Math.min(1, v + 0.1));
-          break;
-        case "ArrowDown":
-          e.preventDefault();
-          setVolume((v) => Math.max(0, v - 0.1));
-          break;
       }
     };
 
@@ -227,23 +197,8 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
     const handlePause = () => setIsPlaying(false);
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
-      
-      // Calculate buffer health (how much is buffered ahead)
-      if (video.buffered.length > 0) {
-        for (let i = 0; i < video.buffered.length; i++) {
-          if (video.buffered.start(i) <= video.currentTime && video.currentTime <= video.buffered.end(i)) {
-            const bufferedAhead = video.buffered.end(i) - video.currentTime;
-            setBufferHealth(bufferedAhead);
-            break;
-          }
-        }
-      }
     };
     const handleDurationChange = () => setDuration(video.duration);
-    const handleLoadedData = () => setIsLoading(false);
-    const handleWaiting = () => setIsLoading(true);
-    const handleCanPlay = () => setIsLoading(false);
-    const handleCanPlayThrough = () => setIsLoading(false);
     
     const handleProgress = () => {
       if (video.buffered.length > 0) {
@@ -253,21 +208,11 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
       }
     };
 
-    const handleStalled = () => {
-      console.log("Video stalled - buffering...");
-      setIsLoading(true);
-    };
-
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
     video.addEventListener("timeupdate", handleTimeUpdate);
     video.addEventListener("durationchange", handleDurationChange);
     video.addEventListener("progress", handleProgress);
-    video.addEventListener("loadeddata", handleLoadedData);
-    video.addEventListener("waiting", handleWaiting);
-    video.addEventListener("canplay", handleCanPlay);
-    video.addEventListener("canplaythrough", handleCanPlayThrough);
-    video.addEventListener("stalled", handleStalled);
 
     return () => {
       video.removeEventListener("play", handlePlay);
@@ -275,11 +220,6 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("durationchange", handleDurationChange);
       video.removeEventListener("progress", handleProgress);
-      video.removeEventListener("loadeddata", handleLoadedData);
-      video.removeEventListener("waiting", handleWaiting);
-      video.removeEventListener("canplay", handleCanPlay);
-      video.removeEventListener("canplaythrough", handleCanPlayThrough);
-      video.removeEventListener("stalled", handleStalled);
     };
   }, []);
 
@@ -300,7 +240,7 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
     }
   }, [volume]);
 
-  // Auto-hide controls
+  // Auto-hide controls (YouTube-style behavior)
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
     
@@ -308,6 +248,7 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
       clearTimeout(controlsTimeoutRef.current);
     }
 
+    // Auto-hide controls after 3 seconds of inactivity (both regular and fullscreen)
     if (isPlaying) {
       controlsTimeoutRef.current = setTimeout(() => {
         setShowControls(false);
@@ -328,9 +269,13 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
   return (
     <div
       ref={containerRef}
-      className={`relative group bg-black ${className}`}
+      className={`relative group bg-black ${className} ${isFullscreen && !showControls ? 'cursor-none' : 'cursor-default'}`}
       onMouseMove={resetControlsTimeout}
-      onMouseLeave={() => isPlaying && setShowControls(false)}
+      onMouseLeave={() => {
+        if (isPlaying && !isFullscreen) {
+          setShowControls(false);
+        }
+      }}
     >
       {/* Video Element - source loaded dynamically */}
       <video
@@ -345,168 +290,72 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
         <p className="text-white text-center">Your browser doesn't support video playback.</p>
       </video>
 
-    
-
-      {/* Connection Info Indicator (top-right) */}
-      {showConnectionInfo && connectionInfo.speed !== 'unknown' && (
-        <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-white z-10">
-          <div className="flex items-center gap-2">
-            {connectionInfo.speed === '4g' ? (
-              <Wifi className="h-3 w-3 text-green-400" />
-            ) : connectionInfo.speed === '3g' ? (
-              <Wifi className="h-3 w-3 text-yellow-400" />
-            ) : (
-              <WifiOff className="h-3 w-3 text-red-400" />
-            )}
-            <span>{connectionInfo.speed.toUpperCase()}</span>
-            {connectionInfo.downlink && (
-              <span className="text-white/70">• {connectionInfo.downlink.toFixed(1)} Mbps</span>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Custom Controls - Only show when video is loaded */}
       {videoLoaded && (
         <div
-          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
-            showControls || !isPlaying ? "opacity-100" : "opacity-0"
+          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent transition-opacity duration-300 pb-2 ${
+            showControls || !isPlaying ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
           {/* Progress Bar */}
           <div
             ref={progressRef}
-            className="relative h-2 cursor-pointer group/progress hover:h-3 transition-all"
+            className="relative h-3 cursor-pointer group/progress hover:h-4 transition-all"
             onClick={handleProgressClick}
             onMouseDown={handleProgressMouseDown}
           >
             {/* Buffered Progress */}
-            <div className="absolute inset-0 bg-white/20">
+            <div className="absolute inset-0 bg-white/30 rounded-full">
               <div
-                className="h-full bg-white/40 transition-all"
+                className="h-full bg-white/50 transition-all rounded-full"
                 style={{ width: `${buffered}%` }}
               />
             </div>
 
             {/* Current Progress */}
             <div
-              className="absolute inset-0 bg-primary transition-all"
+              className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 transition-all rounded-full"
               style={{ width: `${progress}%` }}
             >
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
             </div>
           </div>
 
           {/* Control Buttons */}
-          <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
             {/* Left Controls */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* Play/Pause */}
               <button
                 onClick={togglePlay}
-                className="text-white hover:text-primary transition-colors p-1 sm:p-0"
+                className="text-white hover:scale-110 transition-transform p-1"
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
-                  <Pause className="h-5 w-5 sm:h-6 sm:w-6" fill="white" />
+                  <Pause className="h-6 w-6 sm:h-7 sm:w-7" fill="white" />
                 ) : (
-                  <Play className="h-5 w-5 sm:h-6 sm:w-6" fill="white" />
+                  <Play className="h-6 w-6 sm:h-7 sm:w-7" fill="white" />
                 )}
               </button>
 
-              {/* Volume */}
-              <div className="hidden sm:flex items-center gap-2 group/volume">
-                <button
-                  onClick={toggleMute}
-                  className="text-white hover:text-primary transition-colors"
-                  aria-label={isMuted ? "Unmute" : "Mute"}
-                >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="h-5 w-5" />
-                  ) : (
-                    <Volume2 className="h-5 w-5" />
-                  )}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={isMuted ? 0 : volume}
-                  onChange={(e) => {
-                    const newVolume = parseFloat(e.target.value);
-                    setVolume(newVolume);
-                    if (newVolume > 0) setIsMuted(false);
-                  }}
-                  className="w-0 group-hover/volume:w-20 transition-all opacity-0 group-hover/volume:opacity-100 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
-                />
-              </div>
-
               {/* Time */}
-              <div className="text-white text-xs sm:text-sm font-medium">
+              <div className="text-white text-sm sm:text-base font-semibold drop-shadow-lg">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </div>
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Connection Info Toggle */}
-              <button
-                onClick={() => setShowConnectionInfo(!showConnectionInfo)}
-                className={`text-white hover:text-primary transition-colors ${
-                  connectionInfo.speed === '4g' ? 'text-green-400' : 
-                  connectionInfo.speed === '3g' ? 'text-yellow-400' : 
-                  connectionInfo.speed !== 'unknown' ? 'text-red-400' : ''
-                }`}
-                aria-label="Connection info"
-                title={`Connection: ${connectionInfo.speed.toUpperCase()}`}
-              >
-                {connectionInfo.speed === '4g' || connectionInfo.speed === 'unknown' ? (
-                  <Wifi className="h-4 w-4 sm:h-5 sm:w-5" />
-                ) : (
-                  <WifiOff className="h-4 w-4 sm:h-5 sm:w-5" />
-                )}
-              </button>
-
-              {/* Playback Speed */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                  className="text-white hover:text-primary transition-colors flex items-center gap-1 text-xs sm:text-sm font-medium"
-                  aria-label="Playback speed"
-                >
-                  <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="hidden sm:inline">{playbackSpeed}x</span>
-                </button>
-
-                {/* Speed Menu */}
-                {showSpeedMenu && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-black/95 backdrop-blur-sm rounded-lg border border-white/10 py-1 min-w-[80px] shadow-xl">
-                    {PLAYBACK_SPEEDS.map((speed) => (
-                      <button
-                        key={speed}
-                        onClick={() => changePlaybackSpeed(speed)}
-                        className={`w-full px-3 py-2 text-sm text-white hover:bg-primary/20 transition-colors text-left ${
-                          speed === playbackSpeed ? "bg-primary/30 font-semibold" : ""
-                        }`}
-                      >
-                        {speed}x
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* Fullscreen */}
               <button
                 onClick={toggleFullscreen}
-                className="text-white hover:text-primary transition-colors"
+                className="text-white hover:scale-110 transition-transform p-1"
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
                 {isFullscreen ? (
-                  <Minimize className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Minimize className="h-6 w-6 sm:h-7 sm:w-7" />
                 ) : (
-                  <Maximize className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Maximize className="h-6 w-6 sm:h-7 sm:w-7" />
                 )}
               </button>
             </div>
@@ -515,7 +364,7 @@ const LazyCustomVideoPlayer = ({ videoPath, className = "", shouldLoad = false }
       )}
 
       {/* Center Play Button (when paused and video is loaded) */}
-      {!isPlaying && !isLoading && videoLoaded && (
+      {!isPlaying && videoLoaded && (
         <div
           className="absolute inset-0 flex items-center justify-center cursor-pointer"
           onClick={togglePlay}
